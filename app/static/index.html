@@ -1,119 +1,319 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kitchen Recipe</title>
-<style>
-:root{--bg:#faf7f2;--card:#fff;--ink:#1f1c18;--muted:#6b645a;--line:#e6dfd4;--accent:#c2562b;--done:#a8a196;--hl:#fff1e6}
-@media (prefers-color-scheme:dark){:root{--bg:#171512;--card:#211e1a;--ink:#f1ece4;--muted:#a59d90;--line:#37322b;--accent:#f08a5d;--done:#6d665c;--hl:#3a2a20}}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:21px;line-height:1.4}
-#app{display:flex;flex-direction:column;height:100%}
-header{display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--card)}
-header img{width:92px;height:92px;object-fit:cover;border-radius:10px;margin-right:18px;flex:none}
-header h1{margin:0;font-size:1.55em;line-height:1.15}
-.meta{color:var(--muted);font-size:.85em;margin-top:6px}
-.meta span{margin-right:18px;white-space:nowrap}
-main{flex:1;display:flex;min-height:0}
-section{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 20px 40px}
-#ing{flex:0 0 36%;border-right:1px solid var(--line)}
-#steps{flex:1}
-h2{font-size:.8em;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:4px 0 10px}
-h3{font-size:.95em;margin:18px 0 6px}
-ul,ol{margin:0;padding:0;list-style:none}
-#ing li{padding:9px 4px 9px 34px;border-bottom:1px solid var(--line);position:relative}
-#ing li:before{content:"";position:absolute;left:4px;top:13px;width:18px;height:18px;border:2px solid var(--muted);border-radius:4px}
-#ing li.done{color:var(--done);text-decoration:line-through}
-#ing li.done:before{background:var(--done);border-color:var(--done)}
-#steps li{display:flex;padding:12px 10px;border-radius:10px;margin-bottom:4px}
-#steps li b{flex:none;width:2em;color:var(--accent)}
-#steps li.cur{background:var(--hl)}
-#steps li.done{color:var(--done)}
-.msg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:20px}
-.msg strong{color:var(--ink);font-size:1.3em;margin-bottom:8px}
-@media (max-aspect-ratio:1/1){main{flex-direction:column}#ing{flex:none;max-height:42%;border-right:0;border-bottom:1px solid var(--line)}}
-</style>
-</head>
-<body>
-<div id="app"><div class="msg"><strong>Loading…</strong></div></div>
-<script>
-(function () {
-  var POLL_MS = 4000, currentId = null, app = document.getElementById('app');
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kitchen Recipe</title>
+    <style>
+      :root {
+        --bg: #faf7f2;
+        --card: #fff;
+        --ink: #1f1c18;
+        --muted: #6b645a;
+        --line: #e6dfd4;
+        --accent: #c2562b;
+        --done: #a8a196;
+        --hl: #fff1e6;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #171512;
+          --card: #211e1a;
+          --ink: #f1ece4;
+          --muted: #a59d90;
+          --line: #37322b;
+          --accent: #f08a5d;
+          --done: #6d665c;
+          --hl: #3a2a20;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: 21px;
+        line-height: 1.4;
+      }
+      #app {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        background: var(--card);
+      }
+      header img {
+        width: 92px;
+        height: 92px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 18px;
+        flex: none;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 1.55em;
+        line-height: 1.15;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.85em;
+        margin-top: 6px;
+      }
+      .meta span {
+        margin-right: 18px;
+        white-space: nowrap;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        min-height: 0;
+      }
+      section {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 16px 20px 40px;
+      }
+      #ing {
+        flex: 0 0 36%;
+        border-right: 1px solid var(--line);
+      }
+      #steps {
+        flex: 1;
+      }
+      h2 {
+        font-size: 0.8em;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 4px 0 10px;
+      }
+      h3 {
+        font-size: 0.95em;
+        margin: 18px 0 6px;
+      }
+      ul,
+      ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      #ing li {
+        padding: 9px 4px 9px 34px;
+        border-bottom: 1px solid var(--line);
+        position: relative;
+      }
+      #ing li:before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 13px;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--muted);
+        border-radius: 4px;
+      }
+      #ing li.done {
+        color: var(--done);
+        text-decoration: line-through;
+      }
+      #ing li.done:before {
+        background: var(--done);
+        border-color: var(--done);
+      }
+      #steps li {
+        display: flex;
+        padding: 12px 10px;
+        border-radius: 10px;
+        margin-bottom: 4px;
+      }
+      #steps li b {
+        flex: none;
+        width: 2em;
+        color: var(--accent);
+      }
+      #steps li.cur {
+        background: var(--hl);
+      }
+      #steps li.done {
+        color: var(--done);
+      }
+      .msg {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--muted);
+        padding: 20px;
+      }
+      .msg strong {
+        color: var(--ink);
+        font-size: 1.3em;
+        margin-bottom: 8px;
+      }
+      @media (max-aspect-ratio: 1/1) {
+        main {
+          flex-direction: column;
+        }
+        #ing {
+          flex: none;
+          max-height: 42%;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="msg"><strong>Loading…</strong></div>
+    </div>
+    <script>
+      (function () {
+        var POLL_MS = 4000,
+          currentId = null,
+          app = document.getElementById("app");
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c];
-    });
-  }
+        function esc(s) {
+          return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+            return {
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[c];
+          });
+        }
 
-  function message(title, text) {
-    app.innerHTML = '<div class="msg"><strong>' + esc(title) + '</strong><div>' + esc(text || '') + '</div></div>';
-  }
+        function message(title, text) {
+          app.innerHTML =
+            '<div class="msg"><strong>' +
+            esc(title) +
+            "</strong><div>" +
+            esc(text || "") +
+            "</div></div>";
+        }
 
-  function renderRecipe(r) {
-    var h = '<header>';
-    if (r.image) h += '<img src="' + esc(r.image) + '" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">';
-    h += '<div><h1>' + esc(r.name) + '</h1><div class="meta">';
-    if (r['yield']) h += '<span>' + (/^\d+$/.test(r['yield']) ? 'Serves ' : 'Makes ') + esc(r['yield'].replace(/^(makes|serves|yield:?)\s+/i, '')) + '</span>';
-    if (r.prep) h += '<span>Prep ' + esc(r.prep) + '</span>';
-    if (r.cook) h += '<span>Cook ' + esc(r.cook) + '</span>';
-    if (r.total) h += '<span>Total ' + esc(r.total) + '</span>';
-    h += '<span>' + esc(r.site) + '</span></div></div></header><main>';
-    h += '<section id="ing"><h2>Ingredients</h2><ul>';
-    for (var i = 0; i < r.ingredients.length; i++) h += '<li>' + esc(r.ingredients[i]) + '</li>';
-    h += '</ul></section><section id="steps"><h2>Steps</h2>';
-    var n = 0;
-    for (var s = 0; s < r.sections.length; s++) {
-      var sec = r.sections[s];
-      if (sec.name) h += '<h3>' + esc(sec.name) + '</h3>';
-      h += '<ol>';
-      for (var j = 0; j < sec.steps.length; j++) { n++; h += '<li data-n="' + n + '"><b>' + n + '</b><span>' + esc(sec.steps[j]) + '</span></li>'; }
-      h += '</ol>';
-    }
-    h += '</section></main>';
-    app.innerHTML = h;
-  }
+        function renderRecipe(r) {
+          var h = "<header>";
+          if (r.image)
+            h +=
+              '<img src="' +
+              esc(r.image) +
+              '" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">';
+          h += "<div><h1>" + esc(r.name) + '</h1><div class="meta">';
+          if (r["yield"])
+            h +=
+              "<span>" +
+              (/^\d+$/.test(r["yield"]) ? "Serves " : "Makes ") +
+              esc(r["yield"].replace(/^(makes|serves|yield:?)\s+/i, "")) +
+              "</span>";
+          if (r.prep) h += "<span>Prep " + esc(r.prep) + "</span>";
+          if (r.cook) h += "<span>Cook " + esc(r.cook) + "</span>";
+          if (r.total) h += "<span>Total " + esc(r.total) + "</span>";
+          h += "<span>" + esc(r.site) + "</span></div></div></header><main>";
+          h += '<section id="ing"><h2>Ingredients</h2><ul>';
+          for (var i = 0; i < r.ingredients.length; i++)
+            h += "<li>" + esc(r.ingredients[i]) + "</li>";
+          h += '</ul></section><section id="steps"><h2>Steps</h2>';
+          var n = 0;
+          for (var s = 0; s < r.sections.length; s++) {
+            var sec = r.sections[s];
+            if (sec.name) h += "<h3>" + esc(sec.name) + "</h3>";
+            h += "<ol>";
+            for (var j = 0; j < sec.steps.length; j++) {
+              n++;
+              h +=
+                '<li data-n="' +
+                n +
+                '"><b>' +
+                n +
+                "</b><span>" +
+                esc(sec.steps[j]) +
+                "</span></li>";
+            }
+            h += "</ol>";
+          }
+          h += "</section></main>";
+          app.innerHTML = h;
+        }
 
-  // tap an ingredient to tick it off; tap a step to mark it as the current one
-  app.addEventListener('click', function (e) {
-    var li = e.target;
-    while (li && li !== app && li.tagName !== 'LI') li = li.parentNode;
-    if (!li || li === app) return;
-    if (li.parentNode.parentNode.id === 'ing') { li.className = li.className === 'done' ? '' : 'done'; return; }
-    var items = app.querySelectorAll('#steps li'), cur = +li.getAttribute('data-n');
-    var already = li.className === 'cur';
-    for (var k = 0; k < items.length; k++) {
-      var m = +items[k].getAttribute('data-n');
-      items[k].className = already ? (m <= cur ? 'done' : '') : (m < cur ? 'done' : (m === cur ? 'cur' : ''));
-    }
-  });
+        // tap an ingredient to tick it off; tap a step to mark it as the current one
+        app.addEventListener("click", function (e) {
+          var li = e.target;
+          while (li && li !== app && li.tagName !== "LI") li = li.parentNode;
+          if (!li || li === app) return;
+          if (li.parentNode.parentNode.id === "ing") {
+            li.className = li.className === "done" ? "" : "done";
+            return;
+          }
+          var items = app.querySelectorAll("#steps li"),
+            cur = +li.getAttribute("data-n");
+          var already = li.className === "cur";
+          for (var k = 0; k < items.length; k++) {
+            var m = +items[k].getAttribute("data-n");
+            items[k].className = already
+              ? m <= cur
+                ? "done"
+                : ""
+              : m < cur
+                ? "done"
+                : m === cur
+                  ? "cur"
+                  : "";
+          }
+        });
 
-  function apply(st) {
-    if (st.id === currentId) return;
-    currentId = st.id;
-    if (!st.url) { message('No recipe yet', 'Send one from Home Assistant.'); return; }
-    if (st.show === 'recipe' && st.recipe) { renderRecipe(st.recipe); return; }
-    message('Opening recipe…', st.url);
-    window.location.replace(st.url);
-  }
+        function apply(st) {
+          if (st.id === currentId) return;
+          currentId = st.id;
+          if (!st.url) {
+            message("No recipe yet", "Send one from Home Assistant.");
+            return;
+          }
+          if (st.show === "recipe" && st.recipe) {
+            renderRecipe(st.recipe);
+            return;
+          }
+          message("Opening recipe…", st.url);
+          window.location.replace(st.url);
+        }
 
-  function poll() {
-    var x = new XMLHttpRequest();
-    x.open('GET', '/api/current?t=' + Date.now(), true);
-    x.timeout = 10000;
-    x.onload = function () {
-      if (x.status === 200) { try { apply(JSON.parse(x.responseText)); } catch (e) {} }
-      setTimeout(poll, POLL_MS);
-    };
-    x.onerror = x.ontimeout = function () {
-      if (currentId === null) message('Can’t reach the kitchen server', 'Retrying…');
-      setTimeout(poll, POLL_MS);
-    };
-    x.send();
-  }
-  poll();
-})();
-</script>
-</body>
+        function poll() {
+          var x = new XMLHttpRequest();
+          x.open("GET", "/api/current?t=" + Date.now(), true);
+          x.timeout = 10000;
+          x.onload = function () {
+            if (x.status === 200) {
+              try {
+                apply(JSON.parse(x.responseText));
+              } catch (e) {}
+            }
+            setTimeout(poll, POLL_MS);
+          };
+          x.onerror = x.ontimeout = function () {
+            if (currentId === null)
+              message("Can’t reach the kitchen server", "Retrying…");
+            setTimeout(poll, POLL_MS);
+          };
+          x.send();
+        }
+        poll();
+      })();
+    </script>
+  </body>
 </html>
