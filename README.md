@@ -99,3 +99,7 @@ DATA_DIR=./data python app/app.py
 ```
 
 `app/recipe.py` (the recipe extractor) has no dependencies outside the standard library.
+
+## License
+
+[MIT](LICENSE)
