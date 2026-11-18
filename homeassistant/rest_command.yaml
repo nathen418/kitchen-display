@@ -1,0 +1,12 @@
+# Add under `rest_command:` in configuration.yaml (merge with an existing rest_command: key).
+# Replace kitchen.example.com with the address of your Kitchen Display.
+# secrets.yaml:  kitchen_display_auth: "Bearer <KITCHEN_SECRET>"
+# A new rest_command needs a full Home Assistant restart (a YAML reload is not enough).
+rest_command:
+  kitchen_display_set:
+    url: "https://kitchen.example.com/api/set"
+    method: POST
+    headers:
+      Authorization: !secret kitchen_display_auth
+    content_type: "application/json"
+    payload: '{"url": {{ url | to_json }}, "mode": {{ mode | to_json }}}'

@@ -1,0 +1,11 @@
+# Dashboard card: add a Manual card to any dashboard and paste this.
+type: entities
+title: Send recipe to kitchen display
+show_header_toggle: false
+entities:
+  - entity: input_text.kitchen_display_url
+    name: Recipe URL
+  - entity: input_select.kitchen_display_mode
+    name: Show as
+  - entity: input_button.kitchen_display_send
+    name: Send to display

@@ -1,0 +1,31 @@
+# Automation "Kitchen display - send recipe link".
+# Paste into automations.yaml, or create it in the UI and switch to "Edit in YAML".
+# Helpers it uses (Settings > Devices & services > Helpers):
+#   input_text.kitchen_display_url     "Kitchen Display URL"  (max 255)
+#   input_select.kitchen_display_mode  "Kitchen Display Mode" (Recipe view / Full website)
+#   input_button.kitchen_display_send  "Kitchen Display Send"
+- id: kitchen_display_send
+  alias: Kitchen display - send recipe link
+  description: Pushes the Kitchen Display URL + mode to the kitchen display when Send is pressed.
+  mode: queued
+  triggers:
+    - trigger: state
+      entity_id: input_button.kitchen_display_send
+  conditions:
+    - condition: template
+      value_template: "{{ states('input_text.kitchen_display_url') | trim not in ['', 'unknown', 'unavailable'] }}"
+  actions:
+    - action: rest_command.kitchen_display_set
+      data:
+        url: "{{ states('input_text.kitchen_display_url') | trim }}"
+        mode: "{{ states('input_select.kitchen_display_mode') }}"
+      response_variable: resp
+    - if:
+        - condition: template
+          value_template: "{{ resp.status != 200 }}"
+      then:
+        - action: persistent_notification.create
+          data:
+            notification_id: kitchen_display
+            title: Kitchen display
+            message: "Sending the link failed (HTTP {{ resp.status }}): {{ resp.content }}"

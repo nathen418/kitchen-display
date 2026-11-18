@@ -1,0 +1,13 @@
+# Kitchen Display - shows the latest recipe link pushed from Home Assistant.
+# Put it behind a TLS reverse proxy and point your panel's boot URL at it.
+services:
+  kitchen:
+    build: .
+    image: kitchen-display:latest
+    container_name: kitchen
+    restart: unless-stopped
+    env_file: .env          # KITCHEN_SECRET (keep this file private: chmod 600)
+    ports:
+      - "8080:8080"         # bind to a specific address if you like, e.g. "192.0.2.10:8080:8080"
+    volumes:
+      - ./data:/data
